@@ -1,0 +1,11 @@
+.DS_Store
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+.env
+.env.*
+*.p12
+*.mobileprovision
+# Face model is large and licensed separately: download it as described in README.md
+PeopleGrouping/ML/FaceEmbedding.*

@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" width="960" height="470" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title>PeopleGrouping architecture</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+  </defs>
+  <rect width="960" height="470" rx="16" fill="#0d1117"/>
+  <text x="32" y="44" fill="#e6edf3" font-size="20" font-weight="700">PeopleGrouping: on-device pipeline</text>
+  <text x="32" y="68" fill="#8b949e" font-size="13">Everything runs on the iPhone. Nothing is uploaded.</text>
+
+  <!-- Row 1: input -->
+  <g font-size="13">
+    <rect x="32" y="96" width="170" height="74" rx="10" fill="#161b22" stroke="#30363d"/>
+    <text x="48" y="122" fill="#e6edf3" font-weight="600">PhotoKit</text>
+    <text x="48" y="142" fill="#8b949e">local photos first,</text>
+    <text x="48" y="159" fill="#8b949e">then iCloud-only</text>
+
+    <rect x="236" y="96" width="190" height="74" rx="10" fill="#161b22" stroke="#30363d"/>
+    <text x="252" y="122" fill="#e6edf3" font-weight="600">Quick iCloud check</text>
+    <text x="252" y="142" fill="#8b949e">on-device preview: skip,</text>
+    <text x="252" y="159" fill="#8b949e">embed, or download 1024 px</text>
+
+    <rect x="460" y="96" width="180" height="74" rx="10" fill="#161b22" stroke="#30363d"/>
+    <text x="476" y="122" fill="#e6edf3" font-weight="600">Vision</text>
+    <text x="476" y="142" fill="#8b949e">faces, landmarks,</text>
+    <text x="476" y="159" fill="#8b949e">capture quality</text>
+
+    <rect x="674" y="96" width="254" height="74" rx="10" fill="#161b22" stroke="#30363d"/>
+    <text x="690" y="122" fill="#e6edf3" font-weight="600">Align + embed (Core ML)</text>
+    <text x="690" y="142" fill="#8b949e">4-point warp to 112 px template,</text>
+    <text x="690" y="159" fill="#8b949e">ArcFace 512-d, mirror-averaged</text>
+  </g>
+  <line x1="202" y1="133" x2="232" y2="133" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="426" y1="133" x2="456" y2="133" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="640" y1="133" x2="670" y2="133" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Concurrency band -->
+  <rect x="32" y="186" width="896" height="34" rx="8" fill="#0b2a4a" stroke="#1f6feb"/>
+  <text x="48" y="208" fill="#79c0ff" font-size="13">Sliding-window pipeline: 16 iCloud downloads (6 local loads) in flight, analysis limited to cores - 1, thermal pausing</text>
+
+  <!-- Row 2: storage and clustering -->
+  <g font-size="13">
+    <rect x="674" y="250" width="254" height="74" rx="10" fill="#161b22" stroke="#30363d"/>
+    <text x="690" y="276" fill="#e6edf3" font-weight="600">SwiftData store</text>
+    <text x="690" y="296" fill="#8b949e">faces, embeddings, people,</text>
+    <text x="690" y="313" fill="#8b949e">resumable scan state</text>
+
+    <rect x="372" y="250" width="268" height="74" rx="10" fill="#161b22" stroke="#3fb950"/>
+    <text x="388" y="276" fill="#e6edf3" font-weight="600">Pass 1: strict grouping</text>
+    <text x="388" y="296" fill="#8b949e">nearest members + DBSCAN</text>
+    <text x="388" y="313" fill="#8b949e">high precision, many small groups</text>
+
+    <rect x="32" y="250" width="306" height="74" rx="10" fill="#161b22" stroke="#3fb950"/>
+    <text x="48" y="276" fill="#e6edf3" font-weight="600">Pass 2: merge groups (Apple-style)</text>
+    <text x="48" y="296" fill="#8b949e">average-linkage HAC across groups,</text>
+    <text x="48" y="313" fill="#8b949e">attach leftover faces</text>
+  </g>
+  <line x1="801" y1="170" x2="801" y2="246" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="674" y1="287" x2="644" y2="287" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="372" y1="287" x2="342" y2="287" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Row 3: UI -->
+  <rect x="32" y="360" width="896" height="74" rx="10" fill="#161b22" stroke="#30363d"/>
+  <text x="48" y="386" fill="#e6edf3" font-size="13" font-weight="600">SwiftUI</text>
+  <text x="48" y="406" fill="#8b949e" font-size="13">People grid (clearest face as cover) · person detail · photo viewer with face boxes · rename, merge, remove face</text>
+  <text x="48" y="423" fill="#8b949e" font-size="13">Scan progress · Settings: thresholds, Re-cluster, iCloud options, diagnostics</text>
+  <line x1="185" y1="324" x2="185" y2="356" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+</svg>
